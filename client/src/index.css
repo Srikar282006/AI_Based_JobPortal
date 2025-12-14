@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+body {
+  padding-top: 80px;  /* same height as navbar */
+}

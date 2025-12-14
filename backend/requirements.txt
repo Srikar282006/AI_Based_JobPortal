@@ -1,0 +1,12 @@
+flask
+flask-sqlalchemy
+flask-bcrypt
+flask-cors
+flask-jwt-extended
+scikit-learn
+pandas
+numpy
+
+#instrauctions
+#conda activate interns
+#python run.py
