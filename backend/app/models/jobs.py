@@ -26,6 +26,7 @@ class Company(db.Model):
             "company_email": self.company_email,
             "about_company": self.about_company,
             "website": self.website,
+            "logo_file": self.logo_file,
             "jobs": [job.to_dict() for job in self.jobs]
         }
 

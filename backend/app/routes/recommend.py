@@ -125,7 +125,8 @@ def recommend_applicants(job_id):
             applicant_objects.append(user_data)
 
     if not applicant_texts:
-        return jsonify({"message": "No valid applicant data found"}), 200
+        return jsonify([]), 200
+
 
     # TF-IDF
     documents = [job_text] + applicant_texts

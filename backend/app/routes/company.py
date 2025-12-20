@@ -9,8 +9,23 @@ company_bp = Blueprint("company", __name__)
 
 
 def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in {"jpg", "jpeg", "png"}
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in {
+        "jpg", "jpeg", "png", "webp"
+    }
 
+
+@company_bp.route("/company/profile", methods=["GET"])
+@jwt_required()
+def company_profile():
+    company_id = int(get_jwt_identity())
+
+    company = Company.query.filter_by(id=company_id).first()
+    if not company:
+        return jsonify({"error": "Company not found"}), 404
+
+    return jsonify({
+        "company": company.to_dict()
+    }), 200
 
 @company_bp.route("/uploads/company_logos/<filename>")
 def serve_company_logo(filename):
@@ -61,7 +76,7 @@ def register_company():
         "message": "Company Registered Successfully",
         "userdata": company.to_dict(),
         "token": token
-    }), 201
+    }), 200
 
 
 @company_bp.route("/company/login", methods=["POST"])
@@ -162,7 +177,7 @@ def company_post():
     db.session.add(job_post)
     db.session.commit()
 
-    return jsonify({"message": "Job Posted", "data": job_post.to_dict()})
+    return jsonify({"message": "Job Posted", "data": job_post.to_dict()}),200
 
 
 @company_bp.route("/job/edit/<int:id>", methods=["PUT"])
@@ -220,6 +235,39 @@ def job_getall():
     ]
     return jsonify({"message": "Jobs fetched", "data": job_list})
 
+
+
+@company_bp.route("/company/job/<int:id>", methods=["GET"])
+@jwt_required()
+def company_job(id):
+    current_user = get_jwt_identity()
+
+    if int(current_user) != id:
+        return jsonify({"error": "Unauthorized access"}), 403
+    jobs = Job.query.filter_by(company_id=id).all()
+
+    if not jobs:
+        return jsonify({"message": "No job postings found"}), 200
+
+    job_list = []
+    for job in jobs:
+        job_list.append({
+            "id": job.id,
+            "job_title": job.job_title,
+            "job_description": job.job_description,
+            "job_skills": job.job_skills,
+            "company_id": job.company_id,
+            "company_name": job.company.company_name,
+            "company_logo": f"http://127.0.0.1:5000/uploads/company_logos/{job.company.logo_file}",
+            "about_company": job.company.about_company,
+        })
+
+    return jsonify({
+        "message": "Jobs fetched successfully",
+        "data": job_list
+    }), 200
+
+    
 
 
 @company_bp.route("/job/get/<int:id>", methods=["GET"])
