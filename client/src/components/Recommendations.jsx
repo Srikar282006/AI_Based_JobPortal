@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
-
+import companylogo from '../assets/unknowncompany.jpg'
 const Recommendations = () => {
   const nav=useNavigate("/")
   const userid = localStorage.getItem("Userid")
@@ -25,6 +25,48 @@ const Recommendations = () => {
       toast.error("Failed to fetch recommendations")
     }
   }
+
+const handleApplyJob = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login first");
+      return;
+    }
+
+    const res = await axios.post(
+      `http://127.0.0.1:5000/users/job/${id}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    toast.success(res.data.message);
+
+    // ✅ FIX: update applied status in rjobs
+    setRjobs((prev) =>
+      prev.map((job) =>
+        job.job_id === id ? { ...job, applied: true } : job
+      )
+    );
+
+  } catch (error) {
+    if (error.response) {
+      toast.error(error.response.data.message);
+
+      if (error.response.data.message === "Already applied for this job") {
+        // still mark as applied
+        setRjobs((prev) =>
+          prev.map((job) =>
+            job.job_id === id ? { ...job, applied: true } : job
+          )
+        );
+      }
+    } else {
+      toast.error("Something went wrong");
+    }
+  }
+};
+
 
   return (
     <>
@@ -61,7 +103,7 @@ const Recommendations = () => {
             gap: "20px"
           }}
         >
-          {rjobs.map((job) => {
+          {rjobs.slice(0, 10).map((job) => {
 
             const isApplied = job?.applied || false
 
@@ -81,16 +123,13 @@ const Recommendations = () => {
               >
                 {/* Company Logo */}
                 <img
-                  src={job.company.logo_url}
-                  alt={job.company.company_name}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "contain",
-                    borderRadius: "10px",
-                    border: "1px solid #eee"
-                  }}
-                />
+  src={job.company.logo_url}
+  alt={job.company.company_name}
+  className="w-[80px] h-[80px] object-cover rounded-[10px] border border-gray-200"
+  onError={(e) => {
+        e.currentTarget.src = companylogo}}
+/>
+
 
                 {/* Job Info */}
                 <div style={{ flex: 1 }}>
@@ -133,6 +172,7 @@ const Recommendations = () => {
 
                   <button
                     disabled={isApplied}
+                    onClick={()=>{handleApplyJob(job.job_id)}}
                     style={{
                       padding: "10px",
                       backgroundColor: isApplied ? "#9ca3af" : "#1d4ed8",

@@ -43,12 +43,13 @@ const Profile = () => {
           website: company.website || "",
           logo_file: null,
           logo_preview: company.logo_file
-            ? `http://127.0.0.1:5000/${company.logo_file}`
+            ? `http://127.0.0.1:5000/uploads/company_logos/${company.logo_file}`
             : "",
         });
 
         // keep localStorage in sync
         localStorage.setItem("userdata", JSON.stringify(company));
+        console.log(company.logo_file)
       } catch {
         toast.error("Failed to load company profile");
       }
@@ -60,6 +61,7 @@ const Profile = () => {
   /* ================= INPUT HANDLERS ================= */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+   
   };
 
   const handleFileChange = (e) => {
@@ -106,6 +108,7 @@ const Profile = () => {
       );
 
       setEditMode(false);
+      nav("/")
     } catch {
       toast.error("Failed to update profile");
     } finally {
@@ -116,7 +119,7 @@ const Profile = () => {
   /* ================= UI ================= */
   return (
     <div className="flex justify-center mt-10">
-      <div className="w-2/3 bg-white border rounded-xl p-8 shadow-sm">
+      <div className="w-2/3 bg-white border rounded-xl p-8 shadow-sm mb-10">
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">

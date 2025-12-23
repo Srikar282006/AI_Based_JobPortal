@@ -29,7 +29,7 @@ const Herohome = () => {
 
   const id = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+  const nav = useNavigate();
 
   const fetchJobs = async () => {
     try {
@@ -148,7 +148,7 @@ const Herohome = () => {
             currentJobs.map((job) => (
               <div
                 key={job.id}
-                className="border rounded-xl p-5 shadow-sm flex justify-between items-center hover:shadow-md transition"
+                className="border rounded-xl p-5 shadow-sm flex justify-between items-center hover:shadow-md transition mb-5"
               >
                 <div>
                   <h2 className="text-xl font-semibold">{job.job_title}</h2>

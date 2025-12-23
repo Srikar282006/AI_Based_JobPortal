@@ -3,6 +3,8 @@ from app.extensions import db, bcrypt, BLACKLIST
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from app.models.jobs import Company, Job
 from werkzeug.utils import secure_filename
+
+import time
 import os
 
 company_bp = Blueprint("company", __name__)
@@ -12,6 +14,12 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in {
         "jpg", "jpeg", "png", "webp"
     }
+
+def logo_url(logo_file):
+    if not logo_file:
+        return None
+    filename = os.path.basename(logo_file)
+    return f"http://127.0.0.1:5000/uploads/company_logos/{filename}?v={int(time.time())}"
 
 
 @company_bp.route("/company/profile", methods=["GET"])
@@ -59,13 +67,14 @@ def register_company():
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     company = Company(
-        company_name=company_name,
-        company_email=company_email,
-        about_company=about_company,
-        password=hashed_password,
-        website=website,
-        logo_file=f"uploads/company_logos/{filename}"
-    )
+    company_name=company_name,
+    company_email=company_email,
+    about_company=about_company,
+    password=hashed_password,
+    website=website,
+    logo_file=filename
+)
+
 
     db.session.add(company)
     db.session.commit()
@@ -141,7 +150,7 @@ def company_edit(id):
         upload_dir = os.path.join(current_app.root_path, "uploads", "company_logos")
         os.makedirs(upload_dir, exist_ok=True)
         file.save(os.path.join(upload_dir, filename))
-        company.logo_file = f"uploads/company_logos/{filename}"
+        company.logo_file = filename
 
     db.session.commit()
 
@@ -228,7 +237,7 @@ def job_getall():
             "job_skills": job.job_skills,
             "company_id": job.company_id,
             "company_name": job.company.company_name,
-            "company_logo": f"http://127.0.0.1:5000/uploads/company_logos/{job.company.logo_file}",
+            "company_logo": logo_url(job.company.logo_file),
             "about_company": job.company.about_company,
         }
         for job in jobs
@@ -240,32 +249,32 @@ def job_getall():
 @company_bp.route("/company/job/<int:id>", methods=["GET"])
 @jwt_required()
 def company_job(id):
-    current_user = get_jwt_identity()
+    current_user = int(get_jwt_identity())
 
-    if int(current_user) != id:
+    if current_user != id:
         return jsonify({"error": "Unauthorized access"}), 403
+
     jobs = Job.query.filter_by(company_id=id).all()
 
-    if not jobs:
-        return jsonify({"message": "No job postings found"}), 200
-
-    job_list = []
-    for job in jobs:
-        job_list.append({
+    job_list = [
+        {
             "id": job.id,
             "job_title": job.job_title,
             "job_description": job.job_description,
             "job_skills": job.job_skills,
             "company_id": job.company_id,
             "company_name": job.company.company_name,
-            "company_logo": f"http://127.0.0.1:5000/uploads/company_logos/{job.company.logo_file}",
+            "company_logo": logo_url(job.company.logo_file),
             "about_company": job.company.about_company,
-        })
+        }
+        for job in jobs
+    ]
 
     return jsonify({
         "message": "Jobs fetched successfully",
         "data": job_list
     }), 200
+
 
     
 
@@ -293,9 +302,14 @@ def get_applicant(id):
         return jsonify({"message": "job post not found"}), 404
 
     return jsonify({
-        "message": "Job data retrieved",
-        "applicants": job_app.to_dict()["applicants"]
-    }), 200
+    "message": "Job data retrieved",
+    "applicants": [
+    {**u.to_dict(), "profile_image": u.image_file}
+    for u in job_app.applicants
+],
+    "profile": job_app.applicants[0].image_file if job_app.applicants else None
+}), 200
+
 
 
 @company_bp.route("/company/logout", methods=["POST"])

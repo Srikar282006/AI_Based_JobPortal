@@ -16,6 +16,7 @@ const Recommender = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  
   useEffect(() => {
    
     const fetchData = async () => {
@@ -42,6 +43,8 @@ const Recommender = () => {
 
     fetchData();
   }, [jobId, token, navigate]);
+
+ console.log(applicants)
 
   /* Pagination */
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -95,7 +98,7 @@ const Recommender = () => {
         {/* AVATAR */}
         <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
           <img
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+            src={app.logo?app.logo : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
             alt="Applicant"
             className="h-full w-full object-cover"
           />
@@ -104,7 +107,7 @@ const Recommender = () => {
         {/* INFO */}
         <div className="flex-1 space-y-1">
           <p className="font-semibold text-lg">
-            Applicant #{app.applicant_id}
+            {app.username}
           </p>
 
           <p className="text-sm text-gray-600">

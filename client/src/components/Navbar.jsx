@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { AiOutlineGlobal } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
-import { translatePageTo, languagesMap } from "../utils/translation.js";
 import Login from "./Login.jsx";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -19,28 +18,6 @@ const Navbar = () => {
   setToken(storedToken);
 }, []);
 
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("Language") || "English";
-    setLanguage(savedLang);
-
-    const waitForGoogle = () => {
-      const select = document.querySelector("select.goog-te-combo");
-      if (select) {
-        translatePageTo(languagesMap[savedLang]);
-      } else {
-        setTimeout(waitForGoogle, 500);
-      }
-    };
-
-    waitForGoogle();
-  }, []);
-
-  const handleLangSelect = (lang) => {
-    setLanguage(lang);
-    localStorage.setItem("Language", lang);
-    translatePageTo(languagesMap[lang]);
-  };
 
   const handleModal = () => {
     modalRef.current?.showModal();
@@ -87,43 +64,13 @@ const handleLogout = async () => {
   return (
     <div className="navbar bg-base-100 shadow-sm px-4 justify-between w-full fixed top-0 left-0 right-0 z-50">
       <div className="flex-1">
-        <a className="text-xl font-semibold">Job Portal</a>
+        <a className="text-xl font-semibold">Joblapper</a>
       </div>
 
       <div className="flex gap-4 items-center">
         <div className="font-semibold">
+          <a className="pointer mr-4" href="/">Home</a>
           <a className="pointer" href="/recommender">Recommender</a>
-        </div>
-
-        {/* Language Dropdown */}
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="flex items-center gap-1 btn btn-ghost"
-          >
-            <AiOutlineGlobal size={22} />
-            <span>{language}</span>
-            <IoIosArrowDown size={16} />
-          </div>
-
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-40 p-2 shadow"
-          >
-            {Object.keys(languagesMap).map((lang) => (
-              <li key={lang}>
-                <a
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleLangSelect(lang);
-                  }}
-                >
-                  {lang}
-                </a>
-              </li>
-            ))}
-          </ul>
         </div>
 
         {/* Profile + Sign In */}
@@ -148,7 +95,7 @@ const handleLogout = async () => {
             <li><button onClick={handleModal}>Sign in</button></li>
             </>:
           <>
-          <li><button>Applied Jobs</button></li>
+          <li><button onClick={()=>{nav(`/job/applied/${userid}`)}}>Applied Jobs</button></li>
           <li><button onClick={handleLogout}>Logout</button></li>
           
           </>}

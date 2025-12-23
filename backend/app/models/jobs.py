@@ -48,5 +48,14 @@ class Job(db.Model):
             "job_skills": self.job_skills.split(",") if self.job_skills else [],
             "job_description": self.job_description,
             "company_id": self.company_id,
-            "applicants": [ {"id": user.id, "username": user.username, "email": user.email,"user_data":user.data.to_dict()} for user in self.applicants]
+            "applicants": [
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "user_data": user.data.to_dict() if user.data else None
+                }
+                for user in self.applicants
+            ]
         }
+

@@ -3,6 +3,9 @@ import { useParams, useNavigate,Link } from 'react-router-dom'
 import axios from 'axios'
 import { FaArrowLeft } from "react-icons/fa6"
 import companyPlaceholder from '../assets/image.png'
+import { toast } from "react-toastify";
+import companylogo from '../assets/unknowncompany.jpg'
+import { useRef } from "react";
 
 const CompanyDetail = () => {
   const { id } = useParams()
@@ -11,11 +14,15 @@ const CompanyDetail = () => {
   const [loading, setLoading] = useState(true)
   const [appliedJobs, setAppliedJobs] = useState([]);
   const userdetail=JSON.parse(localStorage.getItem("UserDetail"))
+  const toastShown = useRef(false);
 
   const handlegetbyid = async () => {
     try {
       const res = await axios.get(`http://127.0.0.1:5000/job/get/${id}`)
       setData(res.data)
+      console.log(res.data.company_logo)
+      console.log(res.data.company_logo.split("/uploads/company_logos"))
+
     } catch (error) {
       console.log(error)
     } finally {
@@ -76,6 +83,7 @@ const getAppliedJobs = async () => {
 };
 
   useEffect(() => {
+    
     if (!id) return
     handlegetbyid()
     getAppliedJobs();
@@ -108,10 +116,20 @@ const getAppliedJobs = async () => {
       <section className=" p-6 md:p-8 mb-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <img
-            src={data.company_logo || companyPlaceholder}
-            alt={data.company_name}
-            className="w-28 h-28 md:w-36 md:h-36 object-contain rounded-xl border border-gray-200"
-          />
+  src={
+    data.company_logo && data.company_logo.startsWith("http")
+      ? data.company_logo.split("/uploads/company_logos")[0] +
+        "/uploads/company_logos/" +
+        data.company_logo.split("/uploads/company_logos")[2]
+      : companyPlaceholder
+  }
+  alt={data.company_name}
+  className="w-28 h-28 md:w-36 md:h-36 object-cover rounded-xl border"
+  onError={(e) => {
+      e.currentTarget.src = companylogo}}
+/>
+
+
           <div className="flex-1">
             <h1 className="text-2xl md:text-3xl font-bold">{data.company_name}</h1>
             <p className="text-gray-600 mt-2 text-sm md:text-base">{data.about_company}</p>

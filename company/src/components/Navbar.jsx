@@ -37,7 +37,6 @@ const handleLogout = async () => {
         },
       }
     );
-
   } catch (error) {
     console.error("Logout error:", error);
   } finally {
@@ -74,7 +73,7 @@ const handleLogout = async () => {
             <div className="w-10 rounded-full">
               <img
                 alt="Profile"
-                src={ token?`http://127.0.0.1:5000/${data.logo_file}`:
+                src={ token?`http://127.0.0.1:5000/uploads/company_logos/${data.logo_file}`:
                   
 
       "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"

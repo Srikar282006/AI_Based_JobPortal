@@ -63,7 +63,7 @@ const handleSubmit = async (e) => {
       }
     );
 
-    toast.success("Job posted successfully 🎉");
+    toast.success("Job posted successfully ");
 
     setFormData({
       job_title: "",

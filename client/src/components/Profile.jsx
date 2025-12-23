@@ -111,7 +111,7 @@ const UserDetails = () => {
         <form className="p-8 w-full max-w-md" onSubmit={handleSubmit}>
           <div className="w-full max-w-xl p-6 space-y-5">
             <h1 className="text-2xl font-semibold text-gray-700 text-center">
-              {userDataId ? "Edit your Details" : "Enter your Results"}
+              {userDataId ? "Edit your Details" : "Enter your Deatils"}
             </h1>
 
             <div className="flex flex-col gap-1">

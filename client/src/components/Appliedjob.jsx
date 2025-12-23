@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { useParams,useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import axios from 'axios';
+import companylogo from '../assets/unknowncompany.jpg'
 
 const Appliedjob = () => {
  const [appliedjob,setAppliedjob]=useState([])
  const { id }=useParams()
 const nav=useNavigate()
+const token = localStorage.getItem("token");
 
 const getAppliedJobs = async () => {
   try {
-    const token = localStorage.getItem("token");
+    
     if (!token) return;
 
     const res = await axios.get("http://127.0.0.1:5000/users/applied", {
@@ -29,6 +31,15 @@ const getAppliedJobs = async () => {
 };
 
 useEffect(()=>{
+   if (!token) {
+    toast.error("Please login first");
+
+    setTimeout(() => {
+      
+    }, 500);
+
+    return;
+  }
  getAppliedJobs()
  
 },[])
@@ -47,12 +58,21 @@ console.log(appliedjob)
           appliedjob.map((e, i) => (
             <div
                             key={e.id} 
-                            className="border border-gray-300 rounded-xl w-2/3 max-w-3xl p-4 mt-10 shadow-sm hover:border-black bg-gray-100 "
+                            className="border border-gray-300 rounded-xl w-2/3 max-w-3xl p-4 mt-5 shadow-sm hover:border-black bg-gray-100 mb-7"
                           >
                             {/* Top */}
                             <div className="flex items-center gap-15 ">
                               <img
-                                src={e.company.logo_file ? `http://127.0.0.1:5000/${e.company.logo_file}` : company}
+                                src={
+  e.company.logo_file
+    ? `http://127.0.0.1:5000/uploads/company_logos/${e.company.logo_file}`
+    : companylogo
+}
+onError={(e) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = companylogo;
+  }}
+
                                 alt="company logo"
                                 className="rounded-xl w-14 h-14 md:w-16 md:h-16 object-contain"
                               />
@@ -66,9 +86,10 @@ console.log(appliedjob)
                                 <p className="text-gray-500 text-sm md:text-base">
                                   {e.company.company_name}
                                 </p>
-                                <p className="text-gray-500 text-sm md:text-base">
-                                  {e.company.company_email}
-                                </p>
+                               <p className="text-gray-500 text-sm md:text-base break-all">
+  {e.company.company_email}
+</p>
+
                               </div>
                             </div>
                             

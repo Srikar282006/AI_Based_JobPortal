@@ -6,37 +6,50 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 import re
+import os
+
+def user_logo_url(filename):
+    if not filename:
+        return None
+    return f"http://127.0.0.1:5000/{filename}"
+
+
 
 recommender_bp = Blueprint("recommder", __name__)
 
 @recommender_bp.route("/recommend/userjobs/<int:id>", methods=["GET"])
 @jwt_required()
 def recommended_jobs(id):
+
     jobs = Job.query.all()
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
 
     user = UserData.query.filter_by(user_id=user_id).first()
     if not user:
         return jsonify({"message": "User data not found"}), 404
 
+    from app.models.user import User
+    user_obj = User.query.get(user_id)
+
+    applied_job_ids = set()
+    if user_obj:
+        applied_job_ids = {job.id for job in user_obj.applied_jobs}
+
+    import re
     def clean_words(s):
         s = s.lower()
         s = re.sub(r"[^a-z0-9]+", " ", s)
         return " ".join(s.split())
 
     # -------- USER SKILLS --------
-    user_skill_list = [clean_words(skill) for skill in user.skills.split(",")]
-    user_text = " ".join(user_skill_list)
+    user_text = " ".join(clean_words(s) for s in user.skills.split(","))
 
     # -------- JOB SKILLS --------
     job_texts = []
     for job in jobs:
-        if isinstance(job.job_skills, list):
-            skills = [clean_words(s) for s in job.job_skills]
-        else:
-            skills = [clean_words(s) for s in job.job_skills.split(",")]
-
-        job_texts.append(" ".join(skills))
+        job_texts.append(
+            " ".join(clean_words(s) for s in job.job_skills.split(","))
+        )
 
     # -------- TF-IDF --------
     documents = [user_text] + job_texts
@@ -45,6 +58,8 @@ def recommended_jobs(id):
 
     user_vec = tfidf[0]
     job_vecs = tfidf[1:]
+
+    # ✅ FIXED
     scores = cosine_similarity(user_vec, job_vecs)[0]
 
     # -------- RESPONSE --------
@@ -60,8 +75,7 @@ def recommended_jobs(id):
             "job_skills": job.job_skills,
             "job_description": job.job_description,
             "similarity": round(float(score), 4),
-
-            # ✅ COMPANY DETAILS
+            "applied": job.id in applied_job_ids,
             "company": {
                 "id": company.id,
                 "company_name": company.company_name,
@@ -78,27 +92,22 @@ def recommended_jobs(id):
 
 
 
+
 @recommender_bp.route("/recommend/topapplicants/<int:job_id>", methods=["GET"])
 @jwt_required()
 def recommend_applicants(job_id):
-    # Company identity
     company_id = int(get_jwt_identity())
-    if not company_id:
-        return jsonify({"message": "Please Login!!"}), 400
 
-    # Get job
     job = Job.query.filter_by(id=job_id, company_id=company_id).first()
     if not job:
         return jsonify({"message": "Job post not found"}), 404
 
-    # Extract applicant user_ids safely
     applicants_raw = job.to_dict().get("applicants", [])
     applicants = [a["id"] if isinstance(a, dict) else a for a in applicants_raw]
 
     if not applicants:
         return jsonify({"message": "No applicants found"}), 200
 
-    # Cleaning
     import re
     def clean_words(s):
         s = s.lower()
@@ -113,7 +122,6 @@ def recommend_applicants(job_id):
 
     job_text = job_skill_text + " " + clean_words(job.job_description)
 
-    # Applicant texts
     applicant_texts = []
     applicant_objects = []
 
@@ -127,7 +135,6 @@ def recommend_applicants(job_id):
     if not applicant_texts:
         return jsonify([]), 200
 
-
     # TF-IDF
     documents = [job_text] + applicant_texts
     vectorizer = TfidfVectorizer()
@@ -137,19 +144,25 @@ def recommend_applicants(job_id):
     applicant_vecs = tfidf[1:]
     scores = cosine_similarity(job_vec, applicant_vecs)[0]
 
-    # Output
+    # OUTPUT
     recommendations = []
     for i, score in enumerate(scores):
-        recommendations.append({
-            "applicant_id": applicant_objects[i].user_id,
-            "skills": applicant_objects[i].skills,
-            "similarity": round(float(score), 4),
-            "resume":applicant_objects[i].resume_file,
-            "education":applicant_objects[i].education,
-            "cover_details":applicant_objects[i].cover_details
+        user_data = applicant_objects[i]
+        user = user_data.user  # 🔥 THIS IS THE KEY LINE
 
+        recommendations.append({
+            "applicant_id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "skills": user_data.skills,
+            "education": user_data.education,
+            "cover_details": user_data.cover_details,
+            "resume": user_data.resume_file,
+            "similarity": round(float(score), 4),
+            "logo": user_logo_url(user.image_file)
         })
 
     recommendations.sort(key=lambda x: x["similarity"], reverse=True)
-    return jsonify(recommendations)
+    return jsonify(recommendations), 200
+
 

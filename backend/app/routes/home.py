@@ -259,7 +259,7 @@ def post_userjob(id):
     return jsonify({"message": "Job applied successfully"}), 200
 
 
-# ---------------------- FETCH APPLIED JOBS ----------------------
+
 from flask import jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models import User

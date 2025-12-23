@@ -8,7 +8,7 @@ import DetailsPage from './pages/DetailsPage'
 import Recommendation from './pages/Recommendation'
 import AppliedjobPage from './pages/AppliedjobPage'
 import Register from './components/Register'
-
+import ProtectedRoute from './components/ProtectedRoute'
 function App() {
 
   return (
@@ -17,10 +17,10 @@ function App() {
        <Router>
       <Routes>
         <Route path="/" element={<HomePage/>} />
-        <Route path="/jobdetail/apply/:id" element={<DetailsPage/>}/>
-        <Route path="/job/applied/:id" element={<AppliedjobPage/>}/>
-        <Route path="/profile" element={<ProfilePage/>}/>
-        <Route path="/recommender" element={<Recommendation/>}/>
+        <Route path="/jobdetail/apply/:id" element={<ProtectedRoute><DetailsPage/></ProtectedRoute>}/>
+        <Route path="/job/applied/:id" element={<ProtectedRoute><AppliedjobPage/></ProtectedRoute>}/>
+        <Route path="/profile/:id" element={<ProtectedRoute><ProfilePage/></ProtectedRoute> }/>
+        <Route path="/recommender" element={<ProtectedRoute><Recommendation/></ProtectedRoute> }/>
         <Route path="/register" element={<Register/>}/>
       </Routes>
   </Router>
