@@ -6,6 +6,7 @@ flask-jwt-extended
 scikit-learn
 pandas
 numpy
+gunicorn
 
 #instrauctions
 #conda activate interns
