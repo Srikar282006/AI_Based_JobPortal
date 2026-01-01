@@ -115,7 +115,7 @@ console.log(applicants)
             <div className="flex flex-col items-center text-center gap-3">
               <img
                 src={
-                  `http://127.0.0.1:5000/${applicant.profile_image}` ||
+                  `https://ai-based-jobportal-1.onrender.com/${applicant.profile_image}` ||
                   "https://via.placeholder.com/80"
                 }
                 alt="profile"

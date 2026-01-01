@@ -11,7 +11,7 @@ import os
 def user_logo_url(filename):
     if not filename:
         return None
-    return f"http://127.0.0.1:5000/{filename}"
+    return f"https://ai-based-jobportal-1.onrender.com/{filename}"
 
 
 
@@ -82,7 +82,7 @@ def recommended_jobs(id):
                 "company_email": company.company_email,
                 "about_company": company.about_company,
                 "website": company.website,
-                "logo_url": f"http://127.0.0.1:5000/{company.logo_file}"
+                "logo_url": f"https://ai-based-jobportal-1.onrender.com/{company.logo_file}"
             }
         })
 

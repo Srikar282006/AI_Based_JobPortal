@@ -81,7 +81,7 @@ const handleLogout = async () => {
                 alt="Profile"
                 src={
                    userprofile
-      ? `http://127.0.0.1:5000/${userprofile}`
+      ? `https://ai-based-jobportal-1.onrender.com/${userprofile}`
       : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                 }
               />

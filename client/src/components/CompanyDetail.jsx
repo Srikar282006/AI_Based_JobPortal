@@ -71,7 +71,7 @@ const getAppliedJobs = async () => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    
+
     setAppliedJobs(res.data.applied_job_ids);
 
     console.log("Applied Jobs Loaded:", res.data.applied_job_ids);
@@ -116,7 +116,7 @@ const getAppliedJobs = async () => {
         <div className="flex flex-col md:flex-row items-center gap-6">
           <img
   src={
-    data.company_logo && data.company_logo.startsWith("http")
+    data.company_logo && data.company_logo.startsWith("https")
       ? data.company_logo.split("/uploads/company_logos")[0] +
         "/uploads/company_logos/" +
         data.company_logo.split("/uploads/company_logos")[2]

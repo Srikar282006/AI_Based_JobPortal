@@ -128,7 +128,7 @@ const Recommender = () => {
 
         {/* ACTION */}
         <a
-          href={`http://127.0.0.1:5000/${app.resume}`}
+          href={`https://ai-based-jobportal-1.onrender.com/${app.resume}`}
           target="_blank"
           rel="noreferrer"
           className="self-center px-5 py-2 text-sm rounded-full bg-black text-white hover:bg-gray-800 transition"

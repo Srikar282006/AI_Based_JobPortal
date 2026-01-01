@@ -22,7 +22,7 @@ const handleSubmit = async (e) => {
       email: email,
       password: password,
       language: Language,
-      image_file: filename?.name || null   // optional: just send filename string
+      image_file: filename || null   // optional: just send filename string
     };
 
     const response = await axios.post(

@@ -19,7 +19,7 @@ def logo_url(logo_file):
     if not logo_file:
         return None
     filename = os.path.basename(logo_file)
-    return f"http://127.0.0.1:5000/uploads/company_logos/{filename}?v={int(time.time())}"
+    return f"https://ai-based-jobportal-1.onrender.com/uploads/company_logos/{filename}?v={int(time.time())}"
 
 
 @company_bp.route("/company/profile", methods=["GET"])
@@ -269,7 +269,7 @@ def job_getbyId(id):
 
     return jsonify({"message": "Job Found", "job_detail": job.to_dict(), "company_id": job.company_id,
             "company_name": job.company.company_name,
-            "company_logo": f"http://127.0.0.1:5000/uploads/company_logos/{job.company.logo_file}",
+            "company_logo": f"https://ai-based-jobportal-1.onrender.com/uploads/company_logos/{job.company.logo_file}",
             "about_company": job.company.about_company}), 200
 
 
