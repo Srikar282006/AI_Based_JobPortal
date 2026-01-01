@@ -12,43 +12,49 @@ const Register = () => {
     
     const Language="English"
   const nav=useNavigate()
-   const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
-  setLoader(true)
+  setLoader(true);
 
   try {
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("language", Language);
-    formData.append("image_file", filename); // IMPORTANT
+    const payload = {
+      username: username,
+      email: email,
+      password: password,
+      language: Language,
+      image_file: filename?.name || null   // optional: just send filename string
+    };
 
     const response = await axios.post(
       "https://ai-based-jobportal-1.onrender.com/register",
-      formData,
+      payload,
       {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "application/json" }
       }
     );
-    setLoader(false)
-    toast.success("Registration Successful!",{
-       position: "top-right",
-          autoClose: 2000,
-    })
-    localStorage.setItem("token",response.data.token)
-    nav("/")
-    localStorage.setItem("UserData",response.data.userdata)
-    localStorage.setItem("userprofile",response.data.userdata.image_file)
-    console.log("Submitted Details");
-    console.log(response.data,password);
 
+    setLoader(false);
+
+    toast.success("Registration Successful!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
+
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("UserData", JSON.stringify(response.data.userdata));
+    localStorage.setItem("userprofile", response.data.userdata.image_file);
+
+    nav("/");
+    console.log("Submitted Details");
+    console.log(response.data, password);
 
   } catch (error) {
+    setLoader(false);
     toast.error(error.response?.data?.message || "Registration failed");
     console.error("Error submitting:", error);
   }
 };
+
 
 
   return (

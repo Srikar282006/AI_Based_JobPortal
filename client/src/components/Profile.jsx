@@ -51,53 +51,88 @@ const UserDetails = () => {
     fetchData();
   }, [token, nav]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoader(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoader(true);
 
-    try {
+  try {
+    let resumeFileToSend = resumePath;
+
+    // 🔼 If user uploaded new resume during edit → upload first
+    if (filename) {
+      const fd = new FormData();
+      fd.append("resume_file", filename);
+
+      const uploadRes = await axios.post(
+        "https://ai-based-jobportal-1.onrender.com/upload-resume",
+        fd,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      );
+
+      resumeFileToSend = uploadRes.data.file_path;
+    }
+
+    // ===========================
+    //  EDIT → SEND JSON
+    // ===========================
+    if (userDataId) {
+      await axios.put(
+        "https://ai-based-jobportal-1.onrender.com/userdata/edit",
+        {
+          skills: skills,
+          cover_details: cover,
+          education: education,
+          resume_file: resumeFileToSend
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      toast.success("Updated Successfully!");
+    }
+
+    // ===========================
+    //  FIRST TIME SAVE → FORM DATA
+    // ===========================
+    else {
       const formData = new FormData();
       formData.append("skills", skills);
       formData.append("cover_details", cover);
       formData.append("education", education);
       if (filename) formData.append("resume_file", filename);
 
-      if (userDataId) {
-        await axios.put(
-          "https://ai-based-jobportal-1.onrender.com/userdata/edit",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
+      const response = await axios.post(
+        "https://ai-based-jobportal-1.onrender.com/user/data",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
           }
-        );
+        }
+      );
 
-        toast.success("Updated Successfully!");
-      } else {
-        const response = await axios.post(
-          "https://ai-based-jobportal-1.onrender.com/user/data",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        setUserDataId(response.data.data.id);
-        toast.success("Saved Successfully!");
-      }
-
-      nav("/");
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Error saving data");
+      setUserDataId(response.data.data.id);
+      setResumePath(response.data.data.resume_file);
+      toast.success("Saved Successfully!");
     }
 
-    setLoader(false);
-  };
+    nav("/");
+  } catch (error) {
+    toast.error(error.response?.data?.error || "Error saving data");
+  }
+
+  setLoader(false);
+};
 
   return (
     <>
