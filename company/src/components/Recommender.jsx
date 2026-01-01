@@ -24,12 +24,12 @@ const Recommender = () => {
         setLoading(true);
 
         const jobRes = await axios.get(
-          `http://127.0.0.1:5000/job/get/${jobId}`
+          `https://ai-based-jobportal-1.onrender.com/job/get/${jobId}`
         );
         setJobTitle(jobRes.data.job_detail.job_title);
 
         const recRes = await axios.get(
-          `http://127.0.0.1:5000/recommend/topapplicants/${jobId}`,
+          `https://ai-based-jobportal-1.onrender.com/recommend/topapplicants/${jobId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

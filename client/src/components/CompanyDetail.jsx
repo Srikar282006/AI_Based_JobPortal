@@ -18,7 +18,7 @@ const CompanyDetail = () => {
 
   const handlegetbyid = async () => {
     try {
-      const res = await axios.get(`http://127.0.0.1:5000/job/get/${id}`)
+      const res = await axios.get(`https://ai-based-jobportal-1.onrender.com/job/get/${id}`)
       setData(res.data)
       console.log(res.data.company_logo)
       console.log(res.data.company_logo.split("/uploads/company_logos"))
@@ -39,14 +39,13 @@ const CompanyDetail = () => {
     }
 
     const res = await axios.post(
-      `http://127.0.0.1:5000/users/job/${id}`,
+      `https://ai-based-jobportal-1.onrender.com/users/job/${id}`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
     toast.success(res.data.message);
 
-    // Add to applied jobs immediately
     setAppliedJobs((prev) => [...prev, id]);
 
   } catch (error) {
@@ -68,11 +67,11 @@ const getAppliedJobs = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    const res = await axios.get("http://127.0.0.1:5000/users/applied", {
+    const res = await axios.get("https://ai-based-jobportal-1.onrender.com/users/applied", {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    // Store only job IDs for button disable
+    
     setAppliedJobs(res.data.applied_job_ids);
 
     console.log("Applied Jobs Loaded:", res.data.applied_job_ids);

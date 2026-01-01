@@ -18,7 +18,7 @@ const DetailForm = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://127.0.0.1:5000/job/get/${jobid}`,
+        `https://ai-based-jobportal-1.onrender.com/job/get/${jobid}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -34,7 +34,7 @@ const DetailForm = () => {
   const handleApplicants = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:5000/job/applicant/${jobid}`,
+        `https://ai-based-jobportal-1.onrender.com/job/applicant/${jobid}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

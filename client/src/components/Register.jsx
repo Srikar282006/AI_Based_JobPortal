@@ -25,7 +25,7 @@ const Register = () => {
     formData.append("image_file", filename); // IMPORTANT
 
     const response = await axios.post(
-      "http://127.0.0.1:5000/register",
+      "https://ai-based-jobportal-1.onrender.com/register",
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" }

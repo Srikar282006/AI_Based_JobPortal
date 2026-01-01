@@ -26,7 +26,7 @@ const UserDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://127.0.0.1:5000/user/data/me",
+          "https://ai-based-jobportal-1.onrender.com/user/data/me",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ const UserDetails = () => {
 
       if (userDataId) {
         await axios.put(
-          "http://127.0.0.1:5000/userdata/edit",
+          "https://ai-based-jobportal-1.onrender.com/userdata/edit",
           formData,
           {
             headers: {
@@ -77,7 +77,7 @@ const UserDetails = () => {
         toast.success("Updated Successfully!");
       } else {
         const response = await axios.post(
-          "http://127.0.0.1:5000/user/data",
+          "https://ai-based-jobportal-1.onrender.com/user/data",
           formData,
           {
             headers: {

@@ -35,7 +35,7 @@ const Herohome = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://127.0.0.1:5000/company/job/${id}`,
+        `https://ai-based-jobportal-1.onrender.com/company/job/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setJobs(res.data.data || []);
@@ -62,7 +62,7 @@ const Herohome = () => {
   const handledelete = async (jobId) => {
     try {
       await axios.delete(
-        `http://127.0.0.1:5000/job/delete/${jobId}`,
+        `https://ai-based-jobportal-1.onrender.com/job/delete/${jobId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Job deleted successfully");

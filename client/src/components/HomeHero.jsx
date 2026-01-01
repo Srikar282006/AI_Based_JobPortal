@@ -18,7 +18,7 @@ const HomeHero = () => {
   // Fetch all jobs
   const getjobs = async () => {
     try {
-      const resp = await axios.get("http://127.0.0.1:5000/job/getall");
+      const resp = await axios.get("https://ai-based-jobportal-1.onrender.com/job/getall");
       setJobslist(resp.data.data);
       console.log("Fetched jobs:", resp.data.data);
     } catch (error) {
@@ -32,7 +32,7 @@ const HomeHero = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("http://127.0.0.1:5000/users/applied", {
+      const res = await axios.get("https://ai-based-jobportal-1.onrender.com/users/applied", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

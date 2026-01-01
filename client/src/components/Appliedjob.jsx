@@ -15,7 +15,7 @@ const getAppliedJobs = async () => {
     
     if (!token) return;
 
-    const res = await axios.get("http://127.0.0.1:5000/users/applied", {
+    const res = await axios.get("https://ai-based-jobportal-1.onrender.com/users/applied", {
       headers: { Authorization: `Bearer ${token}` }
     });
 

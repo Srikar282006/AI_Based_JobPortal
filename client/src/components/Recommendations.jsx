@@ -13,7 +13,7 @@ const Recommendations = () => {
   const handlerecommend = async () => {
     try {
       const data = await axios.get(
-        `http://127.0.0.1:5000/recommend/userjobs/${userid}`,
+        `https://ai-based-jobportal-1.onrender.com/recommend/userjobs/${userid}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -35,7 +35,7 @@ const handleApplyJob = async (id) => {
     }
 
     const res = await axios.post(
-      `http://127.0.0.1:5000/users/job/${id}`,
+      `https://ai-based-jobportal-1.onrender.com/users/job/${id}`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );

@@ -65,7 +65,7 @@ const validate = () => {
     formData.append("file", file);
 
     // submit logic 
-  const data=await axios.post("http://127.0.0.1:5000/register/company",
+  const data=await axios.post("https://ai-based-jobportal-1.onrender.com/register/company",
     formData,
       {
         headers: { "Content-Type": "multipart/form-data" }

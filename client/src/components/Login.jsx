@@ -16,7 +16,7 @@ const handleLogin = async (e) => {
 
   try {
     const response = await axios.post(
-      "http://127.0.0.1:5000/login",
+      "https://ai-based-jobportal-1.onrender.com/login",
       {
         email,
         password,
