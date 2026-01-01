@@ -10,7 +10,7 @@ import os
 home_bp = Blueprint("home", __name__)
 
 
-# ---------------------- REGISTER USER ----------------------
+
 @home_bp.route('/register', methods=['POST'])
 def register_user():
     username = request.form.get("username")
@@ -56,14 +56,14 @@ def register_user():
     }), 200
 
 
-# ---------------------- SERVE USER IMAGE ----------------------
+
 @home_bp.route("/uploads/user_images/<filename>")
 def serve_profile_image(filename):
     folder = os.path.join(current_app.root_path, "uploads", "user_images")
     return send_from_directory(folder, filename)
 
 
-# ---------------------- LOGIN ----------------------
+
 @home_bp.route("/login", methods=["POST"])
 def user_login():
     datalog = request.get_json()
@@ -92,7 +92,7 @@ def user_login():
     }), 200
 
 
-# ---------------------- GET USER BASIC ----------------------
+
 @home_bp.route("/user/details/<int:id>", methods=["GET"])
 @jwt_required()
 def get_user(id):
@@ -107,7 +107,6 @@ def get_user(id):
 
 
 
-# ---------------------- SAVE USER EXTRA DATA ----------------------
 @home_bp.route("/user/data", methods=["POST"])
 @jwt_required()
 def save_user_data():
