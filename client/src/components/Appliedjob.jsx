@@ -65,7 +65,7 @@ console.log(appliedjob)
                               <img
                                 src={
   e.company.logo_file
-    ? `http://127.0.0.1:5000/uploads/company_logos/${e.company.logo_file}`
+    ? `https://ai-based-jobportal-1.onrender.com/uploads/company_logos/${e.company.logo_file}`
     : companylogo
 }
 onError={(e) => {

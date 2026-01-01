@@ -193,7 +193,7 @@ const handleSubmit = async (e) => {
 
               {resumePath && (
                 <a
-                  href={`http://127.0.0.1:5000/${resumePath}`}
+                  href={`https://ai-based-jobportal-1.onrender.com/${resumePath}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 underline text-sm mb-1"
