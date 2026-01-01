@@ -19,7 +19,7 @@ const getAppliedJobs = async () => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    // Store only job IDs for button disable
+
     setAppliedjob(res.data.applied_jobs);
 
     console.log("Applied Jobs Loaded:",appliedjob);
