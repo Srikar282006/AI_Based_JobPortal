@@ -4,13 +4,6 @@ import os
 
 app = create_app()
 
-CORS(app,
-     origins=[
-         "https://ai-based-job-portal-six.vercel.app",
-         "http://localhost:3000"
-     ],
-     supports_credentials=True
-)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

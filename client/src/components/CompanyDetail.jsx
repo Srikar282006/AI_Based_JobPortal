@@ -40,7 +40,7 @@ const CompanyDetail = () => {
 
     const res = await axios.post(
       `https://ai-based-jobportal-1.onrender.com/users/job/${id}`,
-      {},
+      { },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 

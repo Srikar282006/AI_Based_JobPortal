@@ -21,16 +21,19 @@ def create_app():
     app.config["UPLOAD_FOLDER"] = "uploads/logos"
     app.config["ALLOWED_EXTENSIONS"] = {"png", "jpg", "jpeg"}
 
+    
     CORS(
-        app,
-        resources={r"/*": {
-            "origins": [
-                "https://ai-based-job-portal-six.vercel.app",
-                "http://localhost:3000"
-            ]
-        }},
-        supports_credentials=True
-    )
+    app,
+    resources={r"/*": {
+        "origins": [
+            "https://ai-based-job-portal-six.vercel.app",
+            "http://localhost:3000"
+        ]
+    }},
+    supports_credentials=True,
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"]
+)
 
     db.init_app(app)
     bcrypt.init_app(app)

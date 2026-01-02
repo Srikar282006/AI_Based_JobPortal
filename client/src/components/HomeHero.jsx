@@ -66,7 +66,7 @@ useEffect(() => {
       }
 
       const res = await axios.post(
-        `http://127.0.0.1:5000/users/job/${id}`,
+        `https://ai-based-jobportal-1.onrender.com/users/job/${id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
