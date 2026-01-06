@@ -31,9 +31,7 @@ const handleSubmit = async (e) => {
     const response = await axios.post(
       "https://ai-based-jobportal-1.onrender.com/register",
       formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" }
-      }
+      
     );
 
     setLoader(false);
