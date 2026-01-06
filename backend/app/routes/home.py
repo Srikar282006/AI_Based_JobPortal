@@ -288,13 +288,14 @@ def get_applied_jobs():
         "applied_jobs": full_jobs
     }), 200
 
-@home_bp.route("/upload-resume", methods=["POST","OPTIONS"])
+@home_bp.route("/upload-resume", methods=["POST", "OPTIONS"])
 def upload_resume():
 
-    # handle preflight request
+    # 1️⃣ Handle Preflight
     if request.method == "OPTIONS":
-        return jsonify({"message": "OK"}), 200
+        return jsonify({"status": "ok"}), 200
 
+    # 2️⃣ Now require JWT only for POST
     verify_jwt_in_request()
 
     file = request.files.get("resume_file")
@@ -302,11 +303,14 @@ def upload_resume():
         return jsonify({"error":"resume_file required"}),400
 
     filename = secure_filename(file.filename)
+
     upload_dir = os.path.join(current_app.root_path,"uploads","resumes")
-    os.makedirs(upload_dir,exist_ok=True)
+    os.makedirs(upload_dir, exist_ok=True)
+
     file.save(os.path.join(upload_dir, filename))
 
     return jsonify({"file_path":f"uploads/resumes/{filename}"}),200
+
 
 
 
