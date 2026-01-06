@@ -28,15 +28,11 @@ def create_app():
         "origins": [
             "https://ai-based-job-portal-six.vercel.app",
             "http://localhost:3000"
-        ],
-            "methods":["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    "allow_headers":["Content-Type", "Authorization"]
-    }
-    
-    
-    },
+        ]
+    }},
     supports_credentials=True,
-
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"]
 )
 
     db.init_app(app)
