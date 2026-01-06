@@ -28,6 +28,9 @@ const handleSubmit = async (e) => {
       formData.append("image_file", filename);
     }
 
+    for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+}
     const response = await axios.post(
       "https://ai-based-jobportal-1.onrender.com/register",
       formData,
