@@ -46,7 +46,7 @@ const handleSubmit = async (e) => {
     // Save user info in localStorage safely
     const userdata = response.data.userdata;
     localStorage.setItem("token", response.data.token);
-    localStorage.setItem("UserData", JSON.stringify(userdata));
+    localStorage.setItem("UserDetail", JSON.stringify(userdata));
     localStorage.setItem("userprofile", userdata?.image_file || "");
     localStorage.setItem("Userid", userdata?.id || "");
 

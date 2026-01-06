@@ -52,7 +52,7 @@ const handleLogout = async () => {
     localStorage.removeItem("Userid");
     localStorage.removeItem("Language");
     localStorage.removeItem("UserDetail");
-    localStorage.removeItem("Userdata");
+    localStorage.removeItem("UserData");
     localStorage.removeItem("userprofile");
     setToken(null);
 
