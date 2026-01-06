@@ -17,19 +17,22 @@ const handleSubmit = async (e) => {
   setLoader(true);
 
   try {
-    const payload = {
-      username: username,
-      email: email,
-      password: password,
-      language: Language,
-      image_file: filename || null   // optional: just send filename string
-    };
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("language", Language);
+
+    // Only append file if selected
+    if (filename) {
+      formData.append("image_file", filename);
+    }
 
     const response = await axios.post(
       "https://ai-based-jobportal-1.onrender.com/register",
-      payload,
+      formData,
       {
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "multipart/form-data" }
       }
     );
 
@@ -40,13 +43,15 @@ const handleSubmit = async (e) => {
       autoClose: 2000,
     });
 
+    // Save user info in localStorage safely
+    const userdata = response.data.userdata;
     localStorage.setItem("token", response.data.token);
-    localStorage.setItem("UserData", JSON.stringify(response.data.userdata));
-    localStorage.setItem("userprofile", response.data.userdata.image_file);
-    localStorage.setItem("Userid",response.data.user.id)
-    nav("/");
-    console.log("Submitted Details");
-    console.log(response.data, password);
+    localStorage.setItem("UserData", JSON.stringify(userdata));
+    localStorage.setItem("userprofile", userdata?.image_file || "");
+    localStorage.setItem("Userid", userdata?.id || "");
+
+    nav("/"); // redirect to homepage
+    console.log("Submitted Details:", response.data);
 
   } catch (error) {
     setLoader(false);

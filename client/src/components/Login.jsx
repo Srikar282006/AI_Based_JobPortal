@@ -32,7 +32,7 @@ const handleLogin = async (e) => {
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("Userid",response.data.user.id)
     localStorage.setItem("UserDetail",JSON.stringify(response.data.user))
-    localStorage.setItem("userprofile",response.data.user.image_file)
+    localStorage.setItem("userprofile", response.data.user?.image_file || "")
     onClose();  // close modal
     nav("/")
     window.location.reload();

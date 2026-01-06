@@ -12,7 +12,8 @@ const Navbar = () => {
   const nav=useNavigate()
   const [token,setToken]=useState(localStorage.getItem("token"))
  const userid=localStorage.getItem("Userid")
- const userprofile=localStorage.getItem("userprofile")
+ const userprofile = localStorage.getItem("userprofile");
+
   useEffect(() => {
   const storedToken = localStorage.getItem("token");
   setToken(storedToken);
