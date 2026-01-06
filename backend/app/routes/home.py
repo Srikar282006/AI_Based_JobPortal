@@ -288,6 +288,19 @@ def get_applied_jobs():
         "applied_jobs": full_jobs
     }), 200
 
+@home_bp.route("/upload-resume", methods=["POST","OPTIONS"])
+@jwt_required()
+def upload_resume():
+    file = request.files.get("resume_file")
+    if not file:
+        return jsonify({"error":"resume_file required"}),400
+
+    filename = secure_filename(file.filename)
+    upload_dir = os.path.join(current_app.root_path,"uploads","resumes")
+    os.makedirs(upload_dir,exist_ok=True)
+    file.save(os.path.join(upload_dir, filename))
+
+    return jsonify({"file_path":f"uploads/resumes/{filename}"}),200
 
 
 
