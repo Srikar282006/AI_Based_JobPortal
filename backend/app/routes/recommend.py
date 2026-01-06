@@ -15,7 +15,7 @@ def user_logo_url(filename):
 
 
 
-recommender_bp = Blueprint("recommder", __name__)
+recommender_bp = Blueprint("recommender", __name__)
 
 @recommender_bp.route("/recommend/userjobs/<int:id>", methods=["GET"])
 @jwt_required()
