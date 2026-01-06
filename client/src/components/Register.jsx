@@ -43,7 +43,7 @@ const handleSubmit = async (e) => {
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("UserData", JSON.stringify(response.data.userdata));
     localStorage.setItem("userprofile", response.data.userdata.image_file);
-    localStorage.setItem("Userid",response.data.user.id)
+    // localStorage.setItem("Userid",response.data.user.id)
     nav("/");
     console.log("Submitted Details");
     console.log(response.data, password);
