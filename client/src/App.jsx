@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<HomePage/>} />
         <Route path="/jobdetail/apply/:id" element={<ProtectedRoute><DetailsPage/></ProtectedRoute>}/>
         <Route path="/job/applied/:id" element={<ProtectedRoute><AppliedjobPage/></ProtectedRoute>}/>
-        <Route path="/profile/:id" element={<ProtectedRoute><ProfilePage/></ProtectedRoute> }/>
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute> }/>
         <Route path="/recommender" element={<ProtectedRoute><Recommendation/></ProtectedRoute> }/>
         <Route path="/register" element={<Register/>}/>
       </Routes>
