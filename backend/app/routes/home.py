@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.utils import secure_filename
 from sqlalchemy import insert
 from flask import jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity,verify_jwt_in_request
 from ..models import User
 import os
 
@@ -289,8 +289,14 @@ def get_applied_jobs():
     }), 200
 
 @home_bp.route("/upload-resume", methods=["POST","OPTIONS"])
-@jwt_required()
 def upload_resume():
+
+    # handle preflight request
+    if request.method == "OPTIONS":
+        return jsonify({"message": "OK"}), 200
+
+    verify_jwt_in_request()
+
     file = request.files.get("resume_file")
     if not file:
         return jsonify({"error":"resume_file required"}),400
@@ -301,6 +307,7 @@ def upload_resume():
     file.save(os.path.join(upload_dir, filename))
 
     return jsonify({"file_path":f"uploads/resumes/{filename}"}),200
+
 
 
 
