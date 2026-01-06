@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useRef } from 'react'
 import { FaHand } from "react-icons/fa6";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import company from '../assets/image.png'
 import { toast } from "react-toastify";
+import companylogo from '../assets/unknowncompany.jpg'
 
 const HomeHero = () => {
   const [jobslist, setJobslist] = useState([]);
@@ -13,11 +13,12 @@ const HomeHero = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const token=localStorage.getItem("token")
   const usernam=localStorage.getItem("userdata")
+  const didRun = useRef(false);
 
   // Fetch all jobs
   const getjobs = async () => {
     try {
-      const resp = await axios.get("http://127.0.0.1:5000/job/getall");
+      const resp = await axios.get("https://ai-based-jobportal-1.onrender.com/job/getall");
       setJobslist(resp.data.data);
       console.log("Fetched jobs:", resp.data.data);
     } catch (error) {
@@ -31,7 +32,7 @@ const HomeHero = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("http://127.0.0.1:5000/users/applied", {
+      const res = await axios.get("https://ai-based-jobportal-1.onrender.com/users/applied", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -43,10 +44,14 @@ const HomeHero = () => {
     }
   };
 
-  useEffect(() => {
-    getjobs();
-    getAppliedJobs();
-  }, []);
+useEffect(() => {
+  if (didRun.current) return;
+  didRun.current = true;
+
+  getjobs();
+  getAppliedJobs();
+
+}, []);
 
   const handleCompany = (id) => {
     nav(`/jobdetail/apply/${id}`);
@@ -61,7 +66,7 @@ const HomeHero = () => {
       }
 
       const res = await axios.post(
-        `http://127.0.0.1:5000/users/job/${id}`,
+        `https://ai-based-jobportal-1.onrender.com/users/job/${id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -94,32 +99,35 @@ const HomeHero = () => {
 
   return (
     <>
-      <div className='bg-green-50 px-3 py-5'>
-        <div className='flex flex-row items-center'>
-          <h1 className='text-3xl font-semibold sm:text-center md:text-center'>
-            Hi {userdetail?.username  || "Guest"}
-          </h1>
-          <FaHand
-            className='m-2 text-yellow-400 transition-transform duration-500 rotate-[45deg] hover:rotate-[-45deg]'
-            size={24}
-          />
-        </div>
+      <div className="bg-green-50 px-4 py-10">
+  <div className="max-w-5xl mx-auto text-center space-y-6">
 
-        <div className='flex flex-col sm:flex-col md:flex-row lg:flex-row gap-2'>
-          <div className='w-1/2 p-2'>
-            <h1 className='text-xl font-semibold text-center'>
-              Personalized Job Recommendations Just for You
-            </h1>
-          </div>
+    {/* Greeting */}
+    <div className="flex justify-center items-center gap-3">
+      <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        Hi {userdetail?.username || "Guest"}
+      </h1>
+      <FaHand
+        className="text-yellow-400 transition-transform duration-500 rotate-[20deg] hover:rotate-[-20deg]"
+        size={26}
+      />
+    </div>
 
-          <div className='w-1/2 p-2'>
-            <p className='text-center m-1'>
-              Our intelligent job recommender system analyzes your skills, experience,
-              and preferences to suggest the best opportunities.
-            </p>
-          </div>
-        </div>
-      </div>
+    {/* Subtitle */}
+    <h2 className="text-xl md:text-2xl font-semibold text-gray-700">
+      Personalized Job Recommendations Just for You
+    </h2>
+
+    {/* Description */}
+    <p className="max-w-3xl mx-auto text-gray-600 text-base md:text-lg leading-relaxed">
+      Our intelligent job recommender system analyzes your skills, experience,
+      and preferences to suggest the best opportunities tailored specifically
+      to your career goals.
+    </p>
+
+  </div>
+</div>
+
 
       {/* SEARCH BAR */}
       <h1 className='text-3xl text-center font-semibold mt-5'>Find your Job</h1>
@@ -160,7 +168,9 @@ const HomeHero = () => {
           {filteredJobs.length === 0 ? (
             <p className="text-gray-500 text-lg">No jobs found.</p>
           ) : (
-            filteredJobs.map((e) => (
+            filteredJobs.map((e) => 
+              (
+              
               <div
                 key={e.id}
                 className="border border-gray-300 rounded-xl w-full max-w-3xl p-4 shadow-sm hover:border-black"
@@ -168,10 +178,13 @@ const HomeHero = () => {
                 {/* Top */}
                 <div className="flex items-center gap-4">
                   <img
-                    src={e.company_logo ? `http://127.0.0.1:5000/${e.company_logo}` : company}
-                    alt="company logo"
-                    className="rounded-xl w-14 h-14 md:w-16 md:h-16 object-contain"
-                  />
+  src={e.company_logo || companylogo}
+  alt="company logo"
+  className="rounded-xl w-14 h-14 md:w-16 md:h-16 object-cover"
+  onError={(e) => {
+    e.currentTarget.src = companylogo
+  }}
+/>
                   <div>
                     <h1
                       className="text-xl md:text-2xl font-semibold hover:underline cursor-pointer"

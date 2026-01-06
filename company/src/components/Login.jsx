@@ -28,7 +28,7 @@ setLoader(true);
 
   try {
     const response = await axios.post(
-      "http://127.0.0.1:5000/company/login",
+      "https://ai-based-jobportal-1.onrender.com/company/login",
       {
         company_email:email,
         password,

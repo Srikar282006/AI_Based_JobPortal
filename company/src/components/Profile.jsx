@@ -28,7 +28,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const res = await axios.get(
-          "http://127.0.0.1:5000/company/profile",
+          "https://ai-based-jobportal-1.onrender.com/company/profile",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -43,12 +43,13 @@ const Profile = () => {
           website: company.website || "",
           logo_file: null,
           logo_preview: company.logo_file
-            ? `http://127.0.0.1:5000/${company.logo_file}`
+            ? `https://ai-based-jobportal-1.onrender.com/uploads/company_logos/${company.logo_file}`
             : "",
         });
 
-        // keep localStorage in sync
+        
         localStorage.setItem("userdata", JSON.stringify(company));
+        console.log(company.logo_file)
       } catch {
         toast.error("Failed to load company profile");
       }
@@ -57,9 +58,9 @@ const Profile = () => {
     fetchProfile();
   }, [token]);
 
-  /* ================= INPUT HANDLERS ================= */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+   
   };
 
   const handleFileChange = (e) => {
@@ -73,7 +74,7 @@ const Profile = () => {
     });
   };
 
-  /* ================= UPDATE PROFILE ================= */
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,7 +90,7 @@ const Profile = () => {
       }
 
       const res = await axios.put(
-        `http://127.0.0.1:5000/edit/company/${companyId}`,
+        `https://ai-based-jobportal-1.onrender.com/edit/company/${companyId}`,
         fd,
         {
           headers: {
@@ -106,6 +107,7 @@ const Profile = () => {
       );
 
       setEditMode(false);
+      nav("/")
     } catch {
       toast.error("Failed to update profile");
     } finally {
@@ -113,10 +115,10 @@ const Profile = () => {
     }
   };
 
-  /* ================= UI ================= */
+ 
   return (
     <div className="flex justify-center mt-10">
-      <div className="w-2/3 bg-white border rounded-xl p-8 shadow-sm">
+      <div className="w-2/3 bg-white border rounded-xl p-8 shadow-sm mb-10">
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">

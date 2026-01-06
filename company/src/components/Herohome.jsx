@@ -29,13 +29,13 @@ const Herohome = () => {
 
   const id = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+  const nav = useNavigate();
 
   const fetchJobs = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://127.0.0.1:5000/company/job/${id}`,
+        `https://ai-based-jobportal-1.onrender.com/company/job/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setJobs(res.data.data || []);
@@ -62,7 +62,7 @@ const Herohome = () => {
   const handledelete = async (jobId) => {
     try {
       await axios.delete(
-        `http://127.0.0.1:5000/job/delete/${jobId}`,
+        `https://ai-based-jobportal-1.onrender.com/job/delete/${jobId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Job deleted successfully");
@@ -148,7 +148,7 @@ const Herohome = () => {
             currentJobs.map((job) => (
               <div
                 key={job.id}
-                className="border rounded-xl p-5 shadow-sm flex justify-between items-center hover:shadow-md transition"
+                className="border rounded-xl p-5 shadow-sm flex justify-between items-center hover:shadow-md transition mb-5"
               >
                 <div>
                   <h2 className="text-xl font-semibold">{job.job_title}</h2>

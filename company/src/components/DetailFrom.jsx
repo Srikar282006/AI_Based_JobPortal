@@ -18,7 +18,7 @@ const DetailForm = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://127.0.0.1:5000/job/get/${jobid}`,
+        `https://ai-based-jobportal-1.onrender.com/job/get/${jobid}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -34,7 +34,7 @@ const DetailForm = () => {
   const handleApplicants = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:5000/job/applicant/${jobid}`,
+        `https://ai-based-jobportal-1.onrender.com/job/applicant/${jobid}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -49,8 +49,9 @@ const DetailForm = () => {
 
     handleJobData();
     handleApplicants();
+    
   }, []);
-
+console.log(applicants)
   if (loading) {
     return (
       <div className="text-center mt-20 text-lg font-semibold">
@@ -114,7 +115,7 @@ const DetailForm = () => {
             <div className="flex flex-col items-center text-center gap-3">
               <img
                 src={
-                  applicant.profile_image ||
+                  `https://ai-based-jobportal-1.onrender.com/${applicant.profile_image}` ||
                   "https://via.placeholder.com/80"
                 }
                 alt="profile"
@@ -131,8 +132,8 @@ const DetailForm = () => {
 
               {/* SKILLS */}
               <div className="flex flex-wrap justify-center gap-2 mt-2">
-               {Array.isArray(applicant.skills)
-  ? applicant.skills.map((skill, i) => (
+               {Array.isArray(applicant.data.skills)
+  ? applicant.data.skills.map((skill, i) => (
       <span
         key={i}
         className="px-3 py-1 text-xs bg-gray-100 rounded-full"
@@ -140,7 +141,7 @@ const DetailForm = () => {
         {skill}
       </span>
     ))
-  : applicant.skills
+  : applicant.data.skills
       ?.split(",")
       .map((skill, i) => (
         <span
@@ -154,9 +155,9 @@ const DetailForm = () => {
               </div>
 
          
-              {applicant.resume && (
+              {applicant.data.resume_file && (
                 <a
-                  href={applicant.resume}
+                  href={applicant.data.resume_file}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 text-sm mt-3 hover:underline"

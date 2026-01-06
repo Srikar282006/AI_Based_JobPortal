@@ -29,7 +29,7 @@ const handleLogout = async () => {
     if (!token) return;
 
     await axios.post(
-      "http://127.0.0.1:5000/company/logout",
+      "https://ai-based-jobportal-1.onrender.com/company/logout",
       {},
       {
         headers: {
@@ -37,7 +37,6 @@ const handleLogout = async () => {
         },
       }
     );
-
   } catch (error) {
     console.error("Logout error:", error);
   } finally {
@@ -74,7 +73,7 @@ const handleLogout = async () => {
             <div className="w-10 rounded-full">
               <img
                 alt="Profile"
-                src={ token?`http://127.0.0.1:5000/${data.logo_file}`:
+                src={ token?`https://ai-based-jobportal-1.onrender.com/uploads/company_logos/${data.logo_file}`:
                   
 
       "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
@@ -98,11 +97,10 @@ const handleLogout = async () => {
       </div>
 
       {/* Modal */}
-    {/* Modal */}
 <dialog ref={modalRef} id="login_modal" className="modal">
   <div className="modal-box relative">
 
-    {/* Close button */}
+   
     <button
       type="button"
       className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -114,7 +112,7 @@ const handleLogout = async () => {
     <Login onClose={closeModal} />
   </div>
 
-  {/* REQUIRED BACKDROP - this was missing */}
+  
   <form method="dialog" className="modal-backdrop">
     <button>close</button>
   </form>

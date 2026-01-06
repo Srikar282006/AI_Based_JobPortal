@@ -53,7 +53,7 @@ const handleSubmit = async (e) => {
     setLoading(true);
 
     await axios.post(
-      "http://127.0.0.1:5000/jobs/post",
+      "https://ai-based-jobportal-1.onrender.com/jobs/post",
       formData,
       {
         headers: {
@@ -63,7 +63,7 @@ const handleSubmit = async (e) => {
       }
     );
 
-    toast.success("Job posted successfully 🎉");
+    toast.success("Job posted successfully ");
 
     setFormData({
       job_title: "",

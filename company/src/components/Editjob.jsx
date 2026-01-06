@@ -21,7 +21,7 @@ const Editjob = () => {
   const handlegetdata = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:5000/job/get/${id}`,
+        `https://ai-based-jobportal-1.onrender.com/job/get/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -29,6 +29,7 @@ const Editjob = () => {
       toast.success("Data Retrieved Successfully");
 
       setData(res.data.job_detail);
+      
     } catch (error) {
       toast.error("Failed to fetch job data");
     }
@@ -66,7 +67,7 @@ const Editjob = () => {
       setLoading(true);
 
       await axios.put(
-        `http://127.0.0.1:5000/job/edit/${id}`,
+        `https://ai-based-jobportal-1.onrender.com/job/edit/${id}`,
         data,
         {
           headers: {
@@ -76,7 +77,7 @@ const Editjob = () => {
         }
       );
 
-      toast.success("Job updated successfully ✅");
+      toast.success("Job updated successfully");
       navigate(-1); // go back
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");

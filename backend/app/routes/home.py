@@ -5,65 +5,65 @@ from app.extensions import db, bcrypt, BLACKLIST
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from werkzeug.utils import secure_filename
 from sqlalchemy import insert
+from flask import jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..models import User
 import os
 
 home_bp = Blueprint("home", __name__)
 
 
-# ---------------------- REGISTER USER ----------------------
+
 @home_bp.route('/register', methods=['POST'])
 def register_user():
-    username = request.form.get("username")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    language = request.form.get("language")
-    file = request.files.get("image_file")
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Request must be JSON"}), 400
+
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
+    language = data.get("language")
+    image = data.get("image")  # url OR base64
 
     if not username or not email or not password:
         return jsonify({"error": "username, email, password are required"}), 400
 
+    if User.query.filter_by(email=email).first():
+        return jsonify({"error": "Email already exists"}), 400
+
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
-
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
-        return {"error": "Email already exists"}, 400
-
-    image_path = None
-    if file:
-        filename = secure_filename(file.filename)
-        upload_dir = os.path.join(current_app.root_path, "uploads", "user_images")
-        os.makedirs(upload_dir, exist_ok=True)
-        file.save(os.path.join(upload_dir, filename))
-        image_path = f"uploads/user_images/{filename}"
 
     user = User(
         username=username,
         email=email,
         password=hashed_password,
-        image_file=image_path,
+        image_file=image,
         language=language
     )
 
     db.session.add(user)
     db.session.commit()
 
-    access_token = create_access_token(identity=str(user.id))
+    token = create_access_token(identity=str(user.id))
 
     return jsonify({
         "message": "registration success",
         "userdata": user.to_dict(),
-        "token": access_token
+        "token": token
     }), 200
 
 
-# ---------------------- SERVE USER IMAGE ----------------------
+
+
 @home_bp.route("/uploads/user_images/<filename>")
 def serve_profile_image(filename):
     folder = os.path.join(current_app.root_path, "uploads", "user_images")
     return send_from_directory(folder, filename)
 
 
-# ---------------------- LOGIN ----------------------
+
 @home_bp.route("/login", methods=["POST"])
 def user_login():
     datalog = request.get_json()
@@ -92,7 +92,7 @@ def user_login():
     }), 200
 
 
-# ---------------------- GET USER BASIC ----------------------
+
 @home_bp.route("/user/details/<int:id>", methods=["GET"])
 @jwt_required()
 def get_user(id):
@@ -107,7 +107,6 @@ def get_user(id):
 
 
 
-# ---------------------- SAVE USER EXTRA DATA ----------------------
 @home_bp.route("/user/data", methods=["POST"])
 @jwt_required()
 def save_user_data():
@@ -165,7 +164,7 @@ def serve_resume(filename):
     return send_from_directory(folder, filename)
 
 
-# ---------------------- GET EXTRA USER DETAILS ----------------------
+
 @home_bp.route("/user/<int:id>", methods=["GET"])
 @jwt_required()
 def get_userdetails(id):
@@ -173,7 +172,6 @@ def get_userdetails(id):
     return jsonify({"message": "data retrieved", "data": user.to_dict()})
 
 
-# ---------------------- UPDATE USER DETAILS ----------------------
 @home_bp.route("/userdata/edit", methods=["PUT"])
 @jwt_required()
 def edit_my_user_data():
@@ -183,29 +181,23 @@ def edit_my_user_data():
     if not user_data:
         return jsonify({"error": "User data not found"}), 404
 
-    skills = request.form.get("skills") or request.json.get("skills")
-    cover_details = request.form.get("cover_details") or request.json.get("cover_details")
-    education = request.form.get("education") or request.json.get("education")
-    file = request.files.get("resume_file")
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "JSON required"}), 400
 
-    if skills: user_data.skills = skills
-    if cover_details: user_data.cover_details = cover_details
-    if education: user_data.education = education
-
-    if file:
-        filename = secure_filename(file.filename)
-        upload_dir = os.path.join(current_app.root_path, "uploads", "resumes")
-        os.makedirs(upload_dir, exist_ok=True)
-        file.save(os.path.join(upload_dir, filename))
-        user_data.resume_file = f"uploads/resumes/{filename}"
+    if "skills" in data: user_data.skills = data["skills"]
+    if "cover_details" in data: user_data.cover_details = data["cover_details"]
+    if "education" in data: user_data.education = data["education"]
+    if "resume" in data: user_data.resume_file = data["resume"]
 
     db.session.commit()
 
-    return jsonify({"message": "Updated", "data": user_data.to_dict()})
+    return jsonify({"message": "Updated", "data": user_data.to_dict()}), 200
 
 
 
-# ---------------------- GET ALL USER DATA ----------------------
+
+
 @home_bp.route("/fetch/usersdata", methods=["GET"])
 def get_alluserdetails():
     users = UserData.query.all()
@@ -232,7 +224,7 @@ def get_my_user_data():
 
     return jsonify({"user_data": user_data.to_dict()}),200
 
-# ---------------------- APPLY FOR JOB ----------------------
+
 @home_bp.route("/users/job/<int:id>", methods=["POST"])
 @jwt_required()
 def post_userjob(id):
@@ -259,10 +251,8 @@ def post_userjob(id):
     return jsonify({"message": "Job applied successfully"}), 200
 
 
-# ---------------------- FETCH APPLIED JOBS ----------------------
-from flask import jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..models import User
+
+
 
 @home_bp.route("/users/applied", methods=["GET"])
 @jwt_required()

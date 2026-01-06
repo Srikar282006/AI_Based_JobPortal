@@ -26,7 +26,7 @@ const UserDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://127.0.0.1:5000/user/data/me",
+          "https://ai-based-jobportal-1.onrender.com/user/data/me",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -51,53 +51,88 @@ const UserDetails = () => {
     fetchData();
   }, [token, nav]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoader(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoader(true);
 
-    try {
+  try {
+    let resumeFileToSend = resumePath;
+
+    // 🔼 If user uploaded new resume during edit → upload first
+    if (filename) {
+      const fd = new FormData();
+      fd.append("resume_file", filename);
+
+      const uploadRes = await axios.post(
+        "https://ai-based-jobportal-1.onrender.com/upload-resume",
+        fd,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      );
+
+      resumeFileToSend = uploadRes.data.file_path;
+    }
+
+    // ===========================
+    //  EDIT → SEND JSON
+    // ===========================
+    if (userDataId) {
+      await axios.put(
+        "https://ai-based-jobportal-1.onrender.com/userdata/edit",
+        {
+          skills: skills,
+          cover_details: cover,
+          education: education,
+          resume_file: resumeFileToSend
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      toast.success("Updated Successfully!");
+    }
+
+    // ===========================
+    //  FIRST TIME SAVE → FORM DATA
+    // ===========================
+    else {
       const formData = new FormData();
       formData.append("skills", skills);
       formData.append("cover_details", cover);
       formData.append("education", education);
       if (filename) formData.append("resume_file", filename);
 
-      if (userDataId) {
-        await axios.put(
-          "http://127.0.0.1:5000/userdata/edit",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
+      const response = await axios.post(
+        "https://ai-based-jobportal-1.onrender.com/user/data",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
           }
-        );
+        }
+      );
 
-        toast.success("Updated Successfully!");
-      } else {
-        const response = await axios.post(
-          "http://127.0.0.1:5000/user/data",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        setUserDataId(response.data.data.id);
-        toast.success("Saved Successfully!");
-      }
-
-      nav("/");
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Error saving data");
+      setUserDataId(response.data.data.id);
+      setResumePath(response.data.data.resume_file);
+      toast.success("Saved Successfully!");
     }
 
-    setLoader(false);
-  };
+    nav("/");
+  } catch (error) {
+    toast.error(error.response?.data?.error || "Error saving data");
+  }
+
+  setLoader(false);
+};
 
   return (
     <>
@@ -111,7 +146,7 @@ const UserDetails = () => {
         <form className="p-8 w-full max-w-md" onSubmit={handleSubmit}>
           <div className="w-full max-w-xl p-6 space-y-5">
             <h1 className="text-2xl font-semibold text-gray-700 text-center">
-              {userDataId ? "Edit your Details" : "Enter your Results"}
+              {userDataId ? "Edit your Details" : "Enter your Deatils"}
             </h1>
 
             <div className="flex flex-col gap-1">
@@ -158,7 +193,7 @@ const UserDetails = () => {
 
               {resumePath && (
                 <a
-                  href={`http://127.0.0.1:5000/${resumePath}`}
+                  href={`https://ai-based-jobportal-1.onrender.com/${resumePath}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 underline text-sm mb-1"

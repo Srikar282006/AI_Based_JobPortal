@@ -16,6 +16,7 @@ const Recommender = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  
   useEffect(() => {
    
     const fetchData = async () => {
@@ -23,12 +24,12 @@ const Recommender = () => {
         setLoading(true);
 
         const jobRes = await axios.get(
-          `http://127.0.0.1:5000/job/get/${jobId}`
+          `https://ai-based-jobportal-1.onrender.com/job/get/${jobId}`
         );
         setJobTitle(jobRes.data.job_detail.job_title);
 
         const recRes = await axios.get(
-          `http://127.0.0.1:5000/recommend/topapplicants/${jobId}`,
+          `https://ai-based-jobportal-1.onrender.com/recommend/topapplicants/${jobId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -42,6 +43,8 @@ const Recommender = () => {
 
     fetchData();
   }, [jobId, token, navigate]);
+
+ console.log(applicants)
 
   /* Pagination */
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -95,7 +98,7 @@ const Recommender = () => {
         {/* AVATAR */}
         <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
           <img
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+            src={app.logo?app.logo : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
             alt="Applicant"
             className="h-full w-full object-cover"
           />
@@ -104,7 +107,7 @@ const Recommender = () => {
         {/* INFO */}
         <div className="flex-1 space-y-1">
           <p className="font-semibold text-lg">
-            Applicant #{app.applicant_id}
+            {app.username}
           </p>
 
           <p className="text-sm text-gray-600">
@@ -125,7 +128,7 @@ const Recommender = () => {
 
         {/* ACTION */}
         <a
-          href={`http://127.0.0.1:5000/${app.resume}`}
+          href={`https://ai-based-jobportal-1.onrender.com/${app.resume}`}
           target="_blank"
           rel="noreferrer"
           className="self-center px-5 py-2 text-sm rounded-full bg-black text-white hover:bg-gray-800 transition"
