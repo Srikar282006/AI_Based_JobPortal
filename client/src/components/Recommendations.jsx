@@ -18,10 +18,14 @@ const Recommendations = () => {
           headers: { Authorization: `Bearer ${token}` }
         }
       )
+       if (data.status === 404) {
+    toast.warning("Some details are missing, please enter your information.");
+   nav("/profile")
+  }
 
       setRjobs(data.data)
 
-    } catch (err) {
+    } catch (error) {
       toast.error("Failed to fetch recommendations")
     }
   }
