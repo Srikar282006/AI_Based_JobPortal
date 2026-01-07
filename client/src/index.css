@@ -4,3 +4,8 @@
 body {
   padding-top: 80px;  /* same height as navbar */
 }
+
+html, body {
+  color-scheme: light;
+  background: white;
+}

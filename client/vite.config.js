@@ -9,7 +9,5 @@ export default defineConfig({
     
   ],
    base: './',
-   define: {
-    __FORCE_LIGHT_MODE__: true
-  }
+   
 })
