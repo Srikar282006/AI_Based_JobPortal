@@ -161,7 +161,7 @@ useEffect(() => {
         </button>
       </div>
 
-      {/* JOB LIST */}
+      
       <div className="mt-5 py-11 px-4">
         <div className="flex flex-col items-center gap-6">
 

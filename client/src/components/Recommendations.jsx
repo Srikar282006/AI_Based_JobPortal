@@ -24,6 +24,7 @@ const Recommendations = () => {
   }
 
       setRjobs(data.data)
+      console.log(data.data)
 
     } catch (error) {
       toast.error("Failed to fetch recommendations")
