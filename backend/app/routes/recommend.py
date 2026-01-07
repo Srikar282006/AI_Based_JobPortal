@@ -4,7 +4,7 @@ from app.models.jobs import Job
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
+import time
 import re
 import os
 
@@ -14,6 +14,11 @@ def user_logo_url(filename):
     return f"https://ai-based-jobportal-1.onrender.com/{filename}"
 
 
+def logo_url(logo_file):
+    if not logo_file:
+        return None
+    filename = os.path.basename(logo_file)
+    return f"https://ai-based-jobportal-1.onrender.com/uploads/company_logos/{filename}?v={int(time.time())}"
 
 recommender_bp = Blueprint("recommender", __name__)
 
@@ -82,7 +87,7 @@ def recommended_jobs(id):
                 "company_email": company.company_email,
                 "about_company": company.about_company,
                 "website": company.website,
-                "logo_url": f"https://ai-based-jobportal-1.onrender.com/{company.logo_file}"
+                "logo_url": logo_url(company.logo_file)
             }
         })
 
