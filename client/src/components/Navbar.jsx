@@ -79,14 +79,20 @@ const handleLogout = async () => {
         <div className="dropdown dropdown-end">
           <div tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
-              <img
+             <img
   alt="Profile"
   src={
     userprofile
-      ? `https://ai-based-jobportal-1.onrender.com/${userprofile}?t=${Date.now()}`
+      ? `https://ai-based-jobportal-1.onrender.com/uploads/user_images/${userprofile}?t=${Date.now()}`
       : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
   }
+  onError={(e) => {
+   
+    e.target.onerror = null;
+    e.target.src = "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
+  }}
 />
+
 
             </div>
           </div>
