@@ -5,31 +5,33 @@ import { useNavigate } from 'react-router-dom';
 import companylogo from '../assets/unknowncompany.jpg'
 const Recommendations = () => {
   const nav=useNavigate("/")
-  const userid = localStorage.getItem("Userid")
+  const userid=localStorage.getItem("Userid")
   const token = localStorage.getItem("token")
 
   const [rjobs, setRjobs] = useState([])
 
-  const handlerecommend = async () => {
-    try {
-      const data = await axios.get(
-        `https://ai-based-jobportal-1.onrender.com/recommend/userjobs/${userid}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
-       if (data.status === 404) {
-    toast.warning("Some details are missing, please enter your information.");
-   nav("/profile")
-  }
+const handlerecommend = async () => {
+  try {
+    const res = await axios.get(
+      `https://ai-based-jobportal-1.onrender.com/recommend/userjobs/${userid}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
 
-      setRjobs(data.data)
-      console.log(data.data)
+    setRjobs(res.data);
+    console.log(res.data);
 
-    } catch (error) {
-      toast.error("Failed to fetch recommendations")
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      toast.warning("Please complete your profile details first");
+      nav(`/profile/${userid}`);
+    } else {
+      toast.error("Failed to fetch recommendations");
     }
   }
+};
+
 
 const handleApplyJob = async (id) => {
   try {

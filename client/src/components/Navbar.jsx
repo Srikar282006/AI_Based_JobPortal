@@ -82,7 +82,7 @@ const handleLogout = async () => {
   alt="Profile"
   src={
     userprofile
-      ? `https://ai-based-jobportal-1.onrender.com/uploads/user_images/${userprofile}?t=${Date.now()}`
+      ? `https://ai-based-jobportal-1.onrender.com/${userprofile}?t=${Date.now()}`
       : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
   }
 />
@@ -91,7 +91,7 @@ const handleLogout = async () => {
           </div>
 
           <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
-            <li><a href={`/profile`}>Profile</a></li>
+            <li><a href={`/profile/${userid}`}>Profile</a></li>
             {token===null?<>
             <li><button onClick={()=>{nav("/register")}}>Sign Up</button></li>
             <li><button onClick={handleModal}>Sign in</button></li>
@@ -134,3 +134,4 @@ const handleLogout = async () => {
 };
 
 export default Navbar;
+
