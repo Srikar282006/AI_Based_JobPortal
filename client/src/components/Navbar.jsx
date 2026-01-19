@@ -17,7 +17,7 @@ const Navbar = () => {
   useEffect(() => {
   const storedToken = localStorage.getItem("token");
   setToken(storedToken);
-  `https://ai-based-jobportal-1.onrender.com/${userprofile}?t=${Date.now()}`
+  `https://ai-based-jobportal-1.onrender.com${userprofile}?t=${Date.now()}`
 }, []);
 
 

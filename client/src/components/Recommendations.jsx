@@ -25,7 +25,7 @@ const handlerecommend = async () => {
   } catch (error) {
     if (error.response && error.response.status === 404) {
       toast.warning("Please complete your profile details first");
-      nav(`/profile/${userid}`);
+      nav(`/profile`);
     } else {
       toast.error("Failed to fetch recommendations");
     }
