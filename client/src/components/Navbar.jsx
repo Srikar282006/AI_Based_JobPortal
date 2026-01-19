@@ -17,6 +17,7 @@ const Navbar = () => {
   useEffect(() => {
   const storedToken = localStorage.getItem("token");
   setToken(storedToken);
+  `https://ai-based-jobportal-1.onrender.com/${userprofile}?t=${Date.now()}`
 }, []);
 
 
@@ -91,7 +92,7 @@ const handleLogout = async () => {
           </div>
 
           <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
-            <li><a href={`/profile/${userid}`}>Profile</a></li>
+            <li><a href={`/profile`}>Profile</a></li>
             {token===null?<>
             <li><button onClick={()=>{nav("/register")}}>Sign Up</button></li>
             <li><button onClick={handleModal}>Sign in</button></li>
